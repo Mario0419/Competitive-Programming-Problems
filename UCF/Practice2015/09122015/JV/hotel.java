@@ -44,11 +44,6 @@ public class hotel{
 	int solve(int[][] grid, int pos, int numStops, int timeLeft, HashSet<Integer> set, boolean[] visited, boolean pastHotel){
 
 		if(pos == grid.length -1){
-			// if(set.contains(pos))
-			// 	pastHotel = true;
-			// if(numStops == 0 && pastHotel){
-			// 	return 1;
-			// }
 			return numStops;
 		}
 		visited[pos] = true;
@@ -60,8 +55,8 @@ public class hotel{
 				if(set.contains(pos))
 					pastHotel = true;
 				min = Math.min(solve(grid, i, numStops, timeLeft - grid[pos][i], set, visited, pastHotel), min);
-				if(pastHotel)
-					pastHotel = false;
+				min = Math.min(solve(grid, i, numStops + 1, 600 - grid[pos][i], set, visited, pastHotel), min);
+
 			}else if(grid[pos][i] != 0 && timeLeft < grid[pos][i]){
 				if(set.contains(pos) && !visited[i]){
 					pastHotel = true;
@@ -140,7 +135,7 @@ public class hotel{
 1 3 400
 3 4 400
 1 2 2
-2 3 3
+2 3 600
 0
 
 

@@ -51,7 +51,6 @@ public class greetings{
 				for(int j = 0; j < t; j++){
 
 					pos += direct;
-					// System.out.println(pos + " " + areApart + " " + " " + time);
 					if(map.containsKey(time)){
 						
 						if(map.get(time) == pos && areApart){
@@ -65,6 +64,8 @@ public class greetings{
 					}else if(pos == lastPos && areApart){
 						areApart = false;
 						count++;
+					}else if(pos == lastPos && !areApart){
+						
 					}else{
 						areApart = true;
 					}
