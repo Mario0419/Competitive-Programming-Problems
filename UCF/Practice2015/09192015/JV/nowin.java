@@ -19,29 +19,12 @@ public class nowin{
 			p += get(hand.charAt(2), p);
 			d += get(hand.charAt(1), d);
 			d += get(hand.charAt(3), d);
-
-			int np = 0;
-
-			if(hand.charAt(0) == 'A' && hand.charAt(2) != 'A')
-				np = 1 + get(hand.charAt(2), np);
-			else if(hand.charAt(0) != 'A' && hand.charAt(2) == 'A')
-				np = get(hand.charAt(0), np) + 1;
-			else if(hand.charAt(0) == 'A' && hand.charAt(2) == 'A')
-				np = 1 + 1;
-			else
-				np = p;
-
-			if(hand.length() == 4){
-				if(p > d)
+		
+				if(play(p, d, hand, 4, true) || play(p, d, hand, 4, false))
 					System.out.println("Yes");
 				else
 					System.out.println("No");
-			}else{
-				if(play(p, d, hand, 4, true) || play(np, d, hand, 4, true) || play(p, d, hand, 4, false) || play(np, d, hand, 4, false))
-					System.out.println("Yes");
-				else
-					System.out.println("No");
-			}
+			
 
 		}
 	}
@@ -59,7 +42,7 @@ public class nowin{
 
 		if(d > 21) return true;
 		if(p > 21) return false;
-		if(d > 17 && !playerTurn) return p >= d;
+		if(d >= 17 && !playerTurn) return p >= d;
 
 		if(playerTurn){
 			//we have several choices
@@ -75,18 +58,11 @@ public class nowin{
 			if(play(p, d, hand, i, false))//don't take card and let dealer go
 				return true;
 
-			if(T == 11){//we need to go with 1 this time
-				if(play(p + 1, d, hand, i + 1, true))//take the 1 and keep taking next turn
-					return true;
-				if(play(p + 1, d, hand, i + 1, false))//take the 1 and stop taking cards
-					return true;
-			}
 		}else{
 			int T = get(hand.charAt(i), d);
 
 			if(play(p, d + T, hand, i + 1, false))//let dealer take the card
 				return true;
-
 		}
 
 		return false;
