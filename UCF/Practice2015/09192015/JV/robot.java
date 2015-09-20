@@ -40,6 +40,8 @@ public class robot{
 					points += distance(list.get(i + 1), currX, currY) + 1.0 + list.get(i).P;
 					currX = list.get(i+1).x;
 					currY = list.get(i+1).y;
+
+					
 					i++;
 				}
 
