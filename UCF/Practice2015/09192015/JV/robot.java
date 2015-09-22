@@ -2,63 +2,85 @@ import java.util.*;
 
 public class robot{
 	robot(){
-
 		Scanner input = new Scanner(System.in);
 
 		while(true){
 			int N = input.nextInt();
-			if(N == 0)
-				break;
+			if(N == 0) break;
 
-			ArrayList<Target> list = new ArrayList<Target>();
-			for(int i = 0; i < N; i++){
-				double x = input.nextDouble();
-				double y = input.nextDouble();
-				double P = input.nextDouble();
-				list.add(new Target(x, y, P));
+			ArrayList<Target> targets = new ArrayList<Target>();
+			targets.add(new Target(0.0, 0.0, 0.0));
+			for(int i = 0; i < N; i++)
+				targets.add(new Target(input.nextDouble(), input.nextDouble(), input.nextDouble()));
 
-			}
-			list.add(new Target(100.0, 100.0, 0));
-			double currX = 0;
-			double currY = 0;
-			double points = 0.0;
+			targets.add(new Target(100.0, 100.0, 0));
+
+			Target curr = new Target(0.0, 0.0, 0.0);
+
 			int i = 0;
-			for(i = 0; i < list.size()-1; i++){
-				//we have the option to skip or move on
-				//we need to find out what's less. Take it, so calculate dist from curr pos to taret i to target i + 1
-				//or just go to target i + 1
-				double takeIt = distance(list.get(i), currX, currY) + 1.0 + distance(list.get(i+1), list.get(i).x, list.get(i).y) + 1.0;
-				double dontTake = distance(list.get(i+1), currX, currY) + 1.0 + list.get(i).P;
-				// System.out.println("take is " + takeIt + " and donttake is " + dontTake);
-				if(takeIt < dontTake){
-					//add to points only number of points to go to place
-					points += distance(list.get(i), currX, currY) + 1.0;
-					currX = list.get(i).x;
-					currY = list.get(i).y;
-				}else{
-					// System.out.println("Skipping over " + i + " and going to " + (i+1));
-					points += distance(list.get(i + 1), currX, currY) + 1.0 + list.get(i).P;
-					currX = list.get(i+1).x;
-					currY = list.get(i+1).y;
+			double[][] grid = new double[N+2][N+2];
+			for(i = 0; i < N + 2; i++)
+				Arrays.fill(grid[i], 0.0);
+			double total = 0.0;
+			i = 0;
+			while(i <= N+1){
 
-					
-					i++;
+				double min = 0.0;
+				int minTarget = i + 1;
+				double buildUp = 0.0;
+				for(int j = i+1; j <= N+1; j++){
+					//we can choose to take next path
+					// double takePath = curr.distance(targets.get(j)) + 1.0 + buildUp;
+					double takePath = distance(targets.get(i), targets.get(j)) + 1.0 + buildUp;
+					//we can choose to skip
+					buildUp += targets.get(j).P;
+					grid[i][j] = takePath;
 				}
-
-			}
-			// System.out.println(i + " is i " + list.size());
-			if(i == list.size()-1){
-
-				points += distance(list.get(i-1), 100.0, 100.0) + 1.0;
+				i++;
 			}
 
-			System.out.printf("%.3f\n", points);
+
+			int source = 0;
+			int sink = N + 1;
+			double ans = dijkstra(grid, 0, N+1);
+			System.out.printf("%.3f\n", ans);
 
 		}
 	}
 
-	double distance(Target i , double currX, double currY){
-		return Math.sqrt(Math.pow(currX-i.x, 2) + Math.pow(currY - i.y, 2));
+	double dijkstra(double[][] grid, int source, int sink){
+		double[] shortest = new double[grid.length];
+		boolean[] used = new boolean[grid.length];
+		Arrays.fill(shortest, Double.MAX_VALUE);
+		Arrays.fill(used, false);
+
+		shortest[source] = 0;
+
+		for(int i = 0; i < grid.length-1; i++){
+			int v = 0;
+			double min = Double.MAX_VALUE;
+			for(int j = 0; j < grid.length; j++){
+				if(!used[j] && shortest[j] < min){
+					min = shortest[j];
+					v = j;
+				}
+			}
+			used[v] = true;
+
+			for(int j = 0; j < grid.length; j++){
+				if(grid[v][j] == 0.0)
+					continue;
+				if(shortest[v] + grid[v][j] < shortest[j]){
+					shortest[j] = shortest[v] + grid[v][j];
+				}
+			}
+		}
+
+		return shortest[sink];
+	}
+
+	double distance(Target o, Target t){
+		return Math.sqrt(Math.pow(o.x-t.x, 2) + Math.pow(o.y-t.y, 2));
 	}
 
 	public static void main(String[] args){
@@ -66,6 +88,7 @@ public class robot{
 	}
 }
 
+	
 class Target{
 	double x;
 	double y;
@@ -75,6 +98,7 @@ class Target{
 		this.y = y;
 		this.P = P;
 	}
+
 }
 
 /*

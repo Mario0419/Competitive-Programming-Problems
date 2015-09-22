@@ -102,7 +102,7 @@ class Cow implements Comparable<Cow>{
 
 /*
 
-5
+6
 3 1 10
 S 10
 NS 4
@@ -118,6 +118,9 @@ NS 1
 2 1 5
 S 3
 NS 3
+1 1 2
+NS 1
+
 
 
 
